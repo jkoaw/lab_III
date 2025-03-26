@@ -67,7 +67,6 @@ namespace lab_III
             // Odczytaj zawartoœæ pliku CSV
             string[] lines = File.ReadAllLines(cos);
             // Tworzenie tabeli danych
-            DataTable dataTable = new DataTable();
             // Dodanie kolumn na podstawie nag³ówka
             string[] headers = lines[0].Split(',');
             foreach (string header in headers)
@@ -78,10 +77,9 @@ namespace lab_III
             for (int i = 1; i < lines.Length; i++)
             {
                 string[] values = lines[i].Split(',');
-                dataTable.Rows.Add(values);
+                dataGridView1.Rows.Add(values);
             }
             // Przypisanie tabeli danych do DataGridView
-            dataGridView1.DataSource = dataTable;
         }
 
         private void button_zapisz_Click(object sender, EventArgs e)
