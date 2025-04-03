@@ -1,5 +1,6 @@
 using System.Data;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace lab_III
 {
@@ -99,6 +100,95 @@ namespace lab_III
                 // Wywo³anie funkcji wczytuj¹cej dane z pliku CSV
                 wczytaj(openFileDialog1.FileName);
             }
+        }
+        [Serializable]
+        public class Osoba
+        {
+            public string Imie;
+            public string Nazwisko;
+            public string Wiek;
+            public string Stanowisko;
+            public Osoba(string Im, string Naz, string Wie, string Stano)
+            {
+                Imie = Im;
+                Nazwisko = Naz;
+                Wiek = Wie;
+                Stanowisko = Stano;
+            }
+            public Osoba()
+            {
+
+            }
+            public void Serializuj(string fileName)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Osoba));
+                using (TextWriter writer = new StreamWriter(fileName))
+                {
+                    serializer.Serialize(writer, this);
+                }
+            }
+            public static Osoba Deserialize(string fileName)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Osoba));
+                using (TextReader reader = new StreamReader(fileName))
+                {
+                    Osoba osoba = (Osoba)serializer.Deserialize(reader);
+                    return osoba;
+                }
+            }
+        }
+
+        private void button_Xml_zapisz_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Pliki Xml (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*";
+            saveFileDialog1.Title = "Wybierz lokalizacjê zapisu pliku Xml";
+            saveFileDialog1.ShowDialog();
+            // Jeœli u¿ytkownik wybierze lokalizacjê i zatwierdzi, zapisz plik CSV
+            if (saveFileDialog1.FileName != "")
+            {
+                // U¿yj metody ExportToCSV i podaj obiekt DataGridView oraz œcie¿kê do pliku CSV
+                zapisz_xml(saveFileDialog1.FileName);
+            }
+        }
+        private void zapisz_xml(string path)
+        {
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (dataGridView1.Rows[i].IsNewRow)
+                {
+                    continue;
+                }
+                for (int j = 0; j < dataGridView1.Rows[i].Cells.Count; j++)
+                {
+                    //Osoba nowa = new Osoba(dataGridView1.Rows[i].Cells[0].ToString(), dataGridView1.Rows[i].Cells[1].ToString(), dataGridView1.Rows[i].Cells[2].ToString(), dataGridView1.Rows[i].Cells[3].ToString());
+                    string pierwszy = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                    string drugi = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                    string trzeci = dataGridView1.Rows[i].Cells[2].Value.ToString();
+                    string czwarty = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                    Osoba nowa = new Osoba(pierwszy, drugi, trzeci, czwarty);
+                    nowa.Serializuj(path);
+                }
+            }
+        }
+
+        private void button_wczytaj_xml_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Pliki Xml (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*";
+            openFileDialog1.Title = "Wybierz plik CSV do wczytania";
+            openFileDialog1.ShowDialog();
+            // Jeœli u¿ytkownik wybierze plik i zatwierdzi, wczytaj dane z pliku CSV
+            if (openFileDialog1.FileName != "")
+            {
+                // Wywo³anie funkcji wczytuj¹cej dane z pliku CSV
+                wczytaj_xml(openFileDialog1.FileName);
+            }
+        }
+        public void wczytaj_xml(string path)
+        {
+            Osoba nowa = Osoba.Deserialize(path);
+            dataGridView1.Rows.Add(new object[] { nowa.Imie, nowa.Nazwisko, nowa.Wiek, nowa.Stanowisko });
         }
     }
 }

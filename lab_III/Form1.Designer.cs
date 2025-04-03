@@ -37,6 +37,8 @@
             Nazwisko = new DataGridViewTextBoxColumn();
             Wiek = new DataGridViewTextBoxColumn();
             Stanowisko = new DataGridViewTextBoxColumn();
+            button_Xml_zapisz = new Button();
+            button_wczytaj_xml = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -109,11 +111,33 @@
             Stanowisko.HeaderText = "Stanowisko";
             Stanowisko.Name = "Stanowisko";
             // 
+            // button_Xml_zapisz
+            // 
+            button_Xml_zapisz.Location = new Point(142, 359);
+            button_Xml_zapisz.Name = "button_Xml_zapisz";
+            button_Xml_zapisz.Size = new Size(99, 23);
+            button_Xml_zapisz.TabIndex = 5;
+            button_Xml_zapisz.Text = "zapisz do xml";
+            button_Xml_zapisz.UseVisualStyleBackColor = true;
+            button_Xml_zapisz.Click += button_Xml_zapisz_Click;
+            // 
+            // button_wczytaj_xml
+            // 
+            button_wczytaj_xml.Location = new Point(357, 359);
+            button_wczytaj_xml.Name = "button_wczytaj_xml";
+            button_wczytaj_xml.Size = new Size(82, 23);
+            button_wczytaj_xml.TabIndex = 6;
+            button_wczytaj_xml.Text = "wczytaj xml";
+            button_wczytaj_xml.UseVisualStyleBackColor = true;
+            button_wczytaj_xml.Click += button_wczytaj_xml_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(button_wczytaj_xml);
+            Controls.Add(button_Xml_zapisz);
             Controls.Add(dataGridView1);
             Controls.Add(button_dodaj);
             Controls.Add(button_usun);
@@ -136,5 +160,7 @@
         private DataGridViewTextBoxColumn Nazwisko;
         private DataGridViewTextBoxColumn Wiek;
         private DataGridViewTextBoxColumn Stanowisko;
+        private Button button_Xml_zapisz;
+        private Button button_wczytaj_xml;
     }
 }
