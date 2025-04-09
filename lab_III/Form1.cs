@@ -1,4 +1,5 @@
 using System.Data;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace lab_III
@@ -81,8 +82,25 @@ namespace lab_III
             }
             // Przypisanie tabeli danych do DataGridView
         }
+        public class Osoba
+        {
+            public string Imie { get; set; }
+            public string Nazwisko { get; set; }
+            public string Wiek { get; set; }
+            public string Stanowisko { get; set; }
+            public Osoba(string Im, string Naz, string Wie, string Stano)
+            {
+                Imie = Im;
+                Nazwisko = Naz;
+                Wiek = Wie;
+                Stanowisko = Stano;
+            }
+            public Osoba()
+            {
 
-        private void button_zapisz_Click(object sender, EventArgs e)
+            }
+        }
+            private void button_zapisz_Click(object sender, EventArgs e)
         {
             zapytaj_o_path();
         }
@@ -98,6 +116,63 @@ namespace lab_III
             {
                 // Wywo³anie funkcji wczytuj¹cej dane z pliku CSV
                 wczytaj(openFileDialog1.FileName);
+            }
+        }
+        private void button_save_json_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Pliki JSON (*.json)|*.json|Wszystkie pliki (*.*)|*.*";
+            saveFileDialog1.Title = "Wybierz lokalizacjê zapisu pliku CSV";
+            saveFileDialog1.ShowDialog();
+            // Jeœli u¿ytkownik wybierze lokalizacjê i zatwierdzi, zapisz plik CSV
+            if (saveFileDialog1.FileName != "")
+            {
+                // U¿yj metody ExportToCSV i podaj obiekt DataGridView oraz œcie¿kê do pliku CSV
+                zapisz_jn(saveFileDialog1.FileName);
+            }
+        }
+        private void zapisz_jn(string path)
+        {
+            string do_zapisu_json = "";
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (dataGridView1.Rows[i].IsNewRow)
+                {
+                    continue;
+                }
+                //Osoba nowa = new Osoba(dataGridView1.Rows[i].Cells[0].ToString(), dataGridView1.Rows[i].Cells[1].ToString(), dataGridView1.Rows[i].Cells[2].ToString(), dataGridView1.Rows[i].Cells[3].ToString());
+                string pierwszy = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                string drugi = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                string trzeci = dataGridView1.Rows[i].Cells[2].Value.ToString();
+                string czwarty = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                Osoba nowa = new Osoba(pierwszy, drugi, trzeci, czwarty);
+                do_zapisu_json += JsonSerializer.Serialize(nowa);
+                do_zapisu_json += "\n";
+            }
+            File.WriteAllText(path, do_zapisu_json);
+        }
+        private void button_wczytaj_j_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Pliki JSON (*.json)|*.json|Wszystkie pliki (*.*)|*.*";
+            openFileDialog1.Title = "Wybierz plik JSON do wczytania";
+            openFileDialog1.ShowDialog();
+            // Jeœli u¿ytkownik wybierze lokalizacjê i zatwierdzi, zapisz plik CSV
+            if (openFileDialog1.FileName != "")
+            {
+                // U¿yj metody ExportToCSV i podaj obiekt DataGridView oraz œcie¿kê do pliku CSV
+                wczytaj_js(openFileDialog1.FileName);
+            }
+        }
+        private void wczytaj_js(string path)
+        {
+            StreamReader file = new StreamReader(path);
+            string line = file.ReadLine();
+            while (line != null)
+            {
+                Osoba nowa = JsonSerializer.Deserialize<Osoba>(line);
+                dodaj(nowa.Imie, nowa.Nazwisko, nowa.Wiek, nowa.Stanowisko);
+                line = file.ReadLine();
             }
         }
     }
